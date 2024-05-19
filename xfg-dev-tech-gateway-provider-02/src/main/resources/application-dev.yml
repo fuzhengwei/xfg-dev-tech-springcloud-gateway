@@ -1,0 +1,14 @@
+server:
+  port: 8092
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetchRegistry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8848/eureka
+
+logging:
+  level:
+    root: info
+  config: classpath:logback-spring.xml

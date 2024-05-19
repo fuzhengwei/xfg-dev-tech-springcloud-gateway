@@ -1,0 +1,1 @@
+curl http://localhost:8090/gw/api/user/hi

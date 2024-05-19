@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: provider-02
+  profiles:
+    active: dev

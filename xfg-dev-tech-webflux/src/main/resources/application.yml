@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: xfg-dev-tech-webflux
+  profiles:
+    active: dev

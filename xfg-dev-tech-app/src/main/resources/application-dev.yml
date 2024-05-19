@@ -1,0 +1,67 @@
+server:
+  port: 8090
+
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 16379
+    database: 0
+    lettuce:
+      pool:
+        max-active: 10
+        max-wait: 1000
+        max-idle: 5
+        min-idle: 3
+  application:
+    name: xfg-dev-tech-springcloud-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: nacos
+        locator:
+          enabled: true
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            alloedHeaders: "*"
+      routes:
+        - id: route_01
+          uri: lb://provider-01
+          order: 1
+          predicates:
+            - Path=/gw/**
+            - Weight=group1, 1
+          filters:
+            - StripPrefix=1
+        - id: route_02
+          uri: lb://provider-02
+          order: 1
+          predicates:
+            - Path=/gw/**
+            - Weight=group1, 9
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}" # 限流方式：Bean名称
+                redis-rate-limiter.replenishRate: 1 # 生成令牌速率：个/秒
+                redis-rate-limiter.burstCapacity: 3 # 令牌桶容量
+                redis-rate-limiter.requestedTokens: 1 # 每次消费的Token数量
+
+eureka:
+  client:
+    service-url:
+      defaultZone: 'http://127.0.0.1:8848/eureka'
+
+logging:
+  level:
+    root: info
+  config: classpath:logback-spring.xml
